@@ -1,5 +1,7 @@
 {
-    "name": "sesama-web",
-    "pages_build_output_dir": "dist",
-    "compatibility_date": "2025-09-27"
+      "name": "sesama-web",
+      "compatibility_date": "2025-09-27",
+      "assets": {
+              "directory": "./dist"
+      }
 }
