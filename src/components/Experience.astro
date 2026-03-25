@@ -1,0 +1,68 @@
+---
+import ExperienceItem from "./ExperienceItem.astro"
+
+const EXPERIENCE = [
+  {
+    date: "Enero 2026 - Actualidad",
+    title: "Web Development Lead",
+    company: "DECOWOOD®",
+    description:
+      "Desarrollo y mantenimiento full-stack de la web, creación de nuevas funcionalidades y adaptación de templates. Gestión técnica de SEO on-page: estructura, optimización de rendimiento y buenas prácticas. Coordinación de tareas web dentro del equipo IT y soporte a otros departamentos (marketing, logística, atención al cliente).",
+    link: "https://decowood.com/es/",
+  },
+  {
+    date: "Abril 2024 - Enero 2026",
+    title: "Web Developer Specialist",
+    company: "DECOWOOD®",
+    description:
+      "Maquetación y desarrollo responsive adaptando diseños a la web en cualquier dispositivo. Optimización de rendimiento y SEO técnico para mejor posicionamiento. Integración de analítica y publicidad: Google Analytics, Google Ads, Google Tag Manager y Meta Ads para seguimiento de datos y medición de campañas.",
+    link: "https://decowood.com/es/",
+  },
+  {
+    date: "Junio 2021 - Abril 2024",
+    title: "Programador Full Stack",
+    company: "DECOWOOD®",
+    description:
+      "Desarrollo y mantenimiento de plataformas web y aplicaciones internas de la empresa. Gestión de analítica web, implementación y análisis de datos para campañas de marketing digital (Google Analytics, Facebook Ads). Soporte técnico y mantenimiento de la infraestructura informática.",
+    link: "https://decowood.com/es/",
+  },
+  {
+    date: "Junio 2021 - Actualidad",
+    title: "Programador Web",
+    company: "Sweet Messages",
+    description:
+      "Desarrollo y mantenimiento web para tienda online de mensajes personalizados. Trabajo en jornada parcial con tecnologías como Bootstrap, Git, PHP y PrestaShop.",
+  },
+  {
+    date: "Agosto 2020 - Diciembre 2021",
+    title: "Programación Web",
+    company: "FOX&SOCKS",
+    description:
+      "Desarrollo web para e-commerce utilizando PrestaShop, Bootstrap, Git y tecnologías frontend. Implementación de funcionalidades personalizadas y mantenimiento de la plataforma.",
+  },
+  {
+    date: "Febrero 2019 - Julio 2019",
+    title: "Técnico Informático",
+    company: "Marelli",
+    description:
+      "Mantenimiento y soporte técnico de la infraestructura informática. Instalación, configuración y reparación de hardware (ordenadores, impresoras, servidores). Soporte a usuarios, gestión de redes y seguridad de los sistemas.",
+  },
+  {
+    date: "Noviembre 2018 - Febrero 2019",
+    title: "Técnico de Impresión 3D y Modelado",
+    company: "Join3D",
+    description:
+      "Modelado y diseño de figuras para impresión 3D. Preparación de archivos y operación de impresoras 3D para producción de prototipos y modelos finales. Optimización de procesos de impresión para mejorar eficiencia.",
+  },
+]
+---
+
+<ol class="relative mt-16">
+  {
+    EXPERIENCE.map((experience) => (
+      <li class="">
+        <ExperienceItem {...experience} />
+      </li>
+    ))
+  }
+</ol>

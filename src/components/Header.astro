@@ -1,0 +1,101 @@
+---
+import ThemeToggle from "./ThemeToggle.astro"
+
+interface NavItem {
+  title: string
+  label: string
+  url: string
+}
+
+const navItems: NavItem[] = [
+  { title: "Experiencia", label: "experiencia", url: "/#experiencia" },
+  { title: "Proyectos", label: "proyectos", url: "/#proyectos" },
+  { title: "Sobre mí", label: "sobre-mi", url: "/#sobre-mi" },
+  { title: "Contacto", label: "contacto", url: "mailto:hola@sergisagrera.com" },
+]
+---
+
+<header class="fixed top-0 z-10 flex items-center justify-center w-full mx-auto mt-4">
+  <nav class="flex px-1 py-1 text-sm font-medium rounded-full justify-center items-center">
+    {
+      navItems.map((link) => (
+        <a
+          class="relative block px-3 py-2 transition-all duration-300 rounded-full nav-link"
+          aria-label={link.label}
+          href={link.url}
+        >
+          {link.title}
+        </a>
+      ))
+    }
+    <div class="ml-2 flex items-center">
+      <ThemeToggle />
+    </div>
+  </nav>
+</header>
+
+<style>
+  nav {
+    /* Fondo inicial ultra-transparente */
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    
+    /* Animación de scroll */
+    animation: nav-shimmer 1s linear both;
+    animation-timeline: scroll();
+    animation-range: 0 100px;
+  }
+
+  @keyframes nav-shimmer {
+    0% {
+      background: rgba(255, 255, 255, 0.05);
+    }
+    to {
+      background: rgba(20, 20, 20, 0.3);
+      border-color: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(20px);
+    }
+  }
+
+  /* ESTADO SELECCIONADO (Activo) */
+  /* Tu JS añade la clase text-blue-500, aquí le damos el look de pastilla brillante */
+  :global(.text-blue-500) {
+    background: rgba(255, 255, 255, 0.15) !important;
+    color: white !important;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+  }
+</style>
+
+<script>
+  document.addEventListener("astro:page-load", () => {
+    const sections = document.querySelectorAll("section")
+    const navItems = document.querySelectorAll("header nav a")
+
+    const callback = (entries: any[]) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          navItems.forEach((item) => {
+            if (item.getAttribute("aria-label") == entry.target.id) {
+              item.classList.add("text-blue-500")
+            } else {
+              item.classList.remove("text-blue-500")
+            }
+          })
+        }
+      })
+    }
+
+    const observer = new IntersectionObserver(callback, {
+      root: null,
+      rootMargin: "0px",
+      threshold: 0.3,
+    })
+
+    sections.forEach((section) => {
+      observer.observe(section)
+    })
+  })
+</script>
