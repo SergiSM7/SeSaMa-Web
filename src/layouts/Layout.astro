@@ -1076,6 +1076,10 @@ const { description, title } = Astro.props
         }
         .burger svg { width: 18px; height: 18px; }
         .hero-bottom { flex-direction: column; align-items: flex-start; }
+        .hero-ctas { width: 100%; }
+        /* en móvil el contenido del hero crece (botones apilados): ocultamos
+           el indicador "Desliza" para que no se solape con los CTAs */
+        .scrollcue { display: none; }
         .contact-meta { gap: 18px; }
       }
     </style>
