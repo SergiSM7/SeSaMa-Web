@@ -308,9 +308,51 @@
   const yearEl = $("#year");
   if (yearEl) yearEl.textContent = new Date().getFullYear();
 
+  /* ---------- HERO TYPEWRITER ---------- */
+  function typeHero() {
+    const l1 = $(".hero .linewrap:nth-child(1) .line");
+    const em = $(".hero em");
+    const bar = $(".hero .cursor-bar");
+    if (!l1 || !em || !bar) return;
+    const t1 = "Sergi", t2 = "Sagrera";
+    // respect reduced motion: show full name, no animation
+    if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      l1.textContent = t1;
+      em.textContent = t2;
+      em.appendChild(bar);
+      return;
+    }
+    // disable the slide-in so the typing reads cleanly
+    l1.style.animation = "none";
+    const line2 = em.closest(".line");
+    if (line2) line2.style.animation = "none";
+    // reset and start with the caret on the first line
+    l1.textContent = "";
+    em.textContent = "";
+    l1.appendChild(bar);
+    const speed = 75;          // ms per letter (rápido pero visible)
+    const pauseBetween = 130;  // pequeña pausa al saltar a la 2ª línea
+    let i = 0, j = -1;
+    function step() {
+      if (i < t1.length) {
+        l1.insertBefore(document.createTextNode(t1[i++]), bar);
+        setTimeout(step, speed);
+      } else if (j < 0) {
+        em.appendChild(bar); // mueve el caret a la línea 2 (acento)
+        j = 0;
+        setTimeout(step, pauseBetween);
+      } else if (j < t2.length) {
+        em.insertBefore(document.createTextNode(t2[j++]), bar);
+        setTimeout(step, speed);
+      }
+    }
+    setTimeout(step, 300); // breve espera tras cargar
+  }
+
   /* ---------- INIT ---------- */
   applyLang(lang);
   onScroll();
   requestAnimationFrame(() => document.body.classList.add("loaded"));
   setTimeout(revealVisible, 200);
+  typeHero();
 })();
