@@ -326,6 +326,9 @@
     l1.style.animation = "none";
     const line2 = em.closest(".line");
     if (line2) line2.style.animation = "none";
+    // caret fijo (sin parpadear) mientras se escribe — evita el flicker
+    bar.style.animation = "none";
+    bar.style.opacity = "1";
     // reset and start with the caret on the first line
     l1.textContent = "";
     em.textContent = "";
@@ -333,6 +336,11 @@
     const speed = 75;          // ms per letter (rápido pero visible)
     const pauseBetween = 130;  // pequeña pausa al saltar a la 2ª línea
     let i = 0, j = -1;
+    function done() {
+      // al terminar, devuelve el parpadeo natural al caret
+      bar.style.animation = "";
+      bar.style.opacity = "";
+    }
     function step() {
       if (i < t1.length) {
         l1.insertBefore(document.createTextNode(t1[i++]), bar);
@@ -343,7 +351,7 @@
         setTimeout(step, pauseBetween);
       } else if (j < t2.length) {
         em.insertBefore(document.createTextNode(t2[j++]), bar);
-        setTimeout(step, speed);
+        setTimeout(j < t2.length ? step : done, speed);
       }
     }
     setTimeout(step, 300); // breve espera tras cargar
