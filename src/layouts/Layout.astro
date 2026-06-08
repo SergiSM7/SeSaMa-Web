@@ -43,6 +43,8 @@ const GA_ID = "G-ZWSQ00ZTHB"
     {/* Google Consent Mode v2 — por defecto DENEGADO; GA solo se carga si hay
         un GA_ID real y se respeta el consentimiento guardado por el usuario */}
     <script define:vars={{ gaId: GA_ID }}>
+      // Basic Consent Mode v2: NO se contacta con Google hasta que el usuario
+      // acepta la analítica. El consentimiento caduca a los 12 meses (AEPD).
       window.dataLayer = window.dataLayer || [];
       function gtag() { dataLayer.push(arguments); }
       window.gtag = gtag;
@@ -55,22 +57,32 @@ const GA_ID = "G-ZWSQ00ZTHB"
         security_storage: "granted",
         wait_for_update: 500
       });
-      gtag("set", "url_passthrough", true);
-      gtag("set", "ads_data_redaction", true);
-      try {
-        var saved = JSON.parse(localStorage.getItem("ss-consent") || "null");
-        if (saved && saved.analytics) {
-          gtag("consent", "update", { analytics_storage: "granted" });
-        }
-      } catch (e) {}
-      // carga GA solo con un ID real (no el placeholder)
-      if (gaId && gaId.indexOf("G-") === 0 && gaId !== "G-XXXXXXXXXX") {
+
+      var GA_MAX_AGE = 365 * 24 * 60 * 60 * 1000; // 12 meses
+      window.__gaValidConsent = function () {
+        try {
+          var s = JSON.parse(localStorage.getItem("ss-consent") || "null");
+          if (!s || !s.ts || (Date.now() - s.ts) > GA_MAX_AGE) return null;
+          return s;
+        } catch (e) { return null; }
+      };
+      // carga gtag.js bajo demanda (idempotente), solo con un ID real
+      window.__loadGA = function () {
+        if (window.__gaLoaded) return;
+        if (!gaId || gaId.indexOf("G-") !== 0 || gaId === "G-XXXXXXXXXX") return;
+        window.__gaLoaded = true;
         var s = document.createElement("script");
         s.async = true;
         s.src = "https://www.googletagmanager.com/gtag/js?id=" + gaId;
         document.head.appendChild(s);
         gtag("js", new Date());
         gtag("config", gaId);
+      };
+      // si ya hay consentimiento válido de analítica, activa y carga GA
+      var prev = window.__gaValidConsent();
+      if (prev && prev.analytics) {
+        gtag("consent", "update", { analytics_storage: "granted" });
+        window.__loadGA();
       }
     </script>
   </head>
@@ -1217,7 +1229,7 @@ const GA_ID = "G-ZWSQ00ZTHB"
          ============================================================ */
       .ck {
         position: fixed;
-        left: 22px;
+        right: 22px;
         bottom: 22px;
         z-index: 250;
         width: min(420px, calc(100vw - 44px));

@@ -1,13 +1,18 @@
 ---
+// En la home los enlaces son anclas con scroll suave (#seccion);
+// fuera de la home (ej. /cookies) apuntan a /#seccion para volver al inicio.
+const path = Astro.url.pathname
+const home = path === "/" || path === ""
+const base = home ? "" : "/"
 ---
 <nav id="nav">
-  <a href="#hero" class="brand" data-magnet><span class="dot"></span>Sergi Sagrera</a>
+  <a href={home ? "#hero" : "/"} class="brand" data-magnet><span class="dot"></span>Sergi Sagrera</a>
   <div class="nav-links" id="navlinks">
-    <a href="#about" data-i18n="nav.about">Sobre mí</a>
-    <a href="#experience" data-i18n="nav.experience">Experiencia</a>
-    <a href="#projects" data-i18n="nav.projects">Proyectos</a>
-    <a href="#stack" data-i18n="nav.stack">Stack</a>
-    <a href="#contact" data-i18n="nav.contact">Contacto</a>
+    <a href={`${base}#about`} data-i18n="nav.about">Sobre mí</a>
+    <a href={`${base}#experience`} data-i18n="nav.experience">Experiencia</a>
+    <a href={`${base}#projects`} data-i18n="nav.projects">Proyectos</a>
+    <a href={`${base}#stack`} data-i18n="nav.stack">Stack</a>
+    <a href={`${base}#contact`} data-i18n="nav.contact">Contacto</a>
   </div>
   <div class="nav-tools">
     <div class="lang" id="lang">

@@ -444,7 +444,9 @@
   }
 
   /* ---------- COOKIE CONSENT ---------- */
+  // usa el validador del <head> (respeta la caducidad de 12 meses) si está
   function readConsent() {
+    if (typeof window.__gaValidConsent === "function") return window.__gaValidConsent();
     try { return JSON.parse(localStorage.getItem("ss-consent") || "null"); } catch (e) { return null; }
   }
   function initConsent() {
@@ -477,6 +479,8 @@
           ad_personalization: "denied"
         });
       }
+      // carga GA solo al aceptar (no antes: sin conexión a Google sin consentir)
+      if (analytics && typeof window.__loadGA === "function") window.__loadGA();
       hide();
     }
 
