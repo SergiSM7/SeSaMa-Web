@@ -80,20 +80,48 @@
         `<div class="stat"><span class="n" data-count="${s.n}">${s.n}</span><span class="l">${s.l}</span></div>`
       ).join("");
     }
-    // timeline
+    // experience — agrupado por empresa (más visual: cada empresa es un
+    // bloque con su progresión de roles)
     const tl = $("#timeline");
     if (tl) {
-      const fixed = '<div class="tl-line"></div><div class="tl-progress" id="tlProgress"></div>';
-      tl.innerHTML = fixed + t.experience.items.map(it => `
-        <div class="tl-item reveal${it.current ? " cur" : ""}">
-          <span class="tl-dot"></span>
-          <div class="tl-head">
-            <span class="tl-role">${it.role}</span>
-            <span class="tl-period">${it.period}</span>
+      const groups = [];
+      const idx = {};
+      t.experience.items.forEach(it => {
+        if (idx[it.company] == null) { idx[it.company] = groups.length; groups.push({ company: it.company, roles: [] }); }
+        groups[idx[it.company]].roles.push(it);
+      });
+      const initials = (name) => name
+        .replace(/[^A-Za-zÀ-ÿ0-9& ]/g, "")
+        .split(/[\s&]+/).filter(Boolean).slice(0, 2)
+        .map(w => w[0]).join("").toUpperCase();
+      const startOf = (p) => (p.split("—")[0] || p).trim();
+      const endOf = (p) => (p.split("—")[1] || p).trim();
+      const single = (g) => g.roles.length === 1;
+      tl.innerHTML = groups.map(g => {
+        const cur = g.roles.some(r => r.current);
+        const span = `${startOf(g.roles[g.roles.length - 1].period)} — ${endOf(g.roles[0].period)}`;
+        const badge = cur ? `<span class="xp-badge"><span class="live"></span>${t.experience.present}</span>` : "";
+        const roles = g.roles.map(r => `
+          <div class="xp-role">
+            <div class="xp-role-head">
+              <span class="xp-role-title">${r.role}</span>
+              <span class="xp-role-period">${r.period}</span>
+            </div>
+            <p class="xp-role-desc">${r.desc}</p>
+          </div>`).join("");
+        return `
+        <article class="xp-card reveal${cur ? " cur" : ""}${single(g) ? " solo" : ""}">
+          <div class="xp-top">
+            <span class="xp-mono-badge">${initials(g.company)}</span>
+            <div class="xp-id">
+              <h3 class="xp-company">${g.company}</h3>
+              <span class="xp-span">${span}</span>
+            </div>
+            ${badge}
           </div>
-          <span class="tl-company">${it.company}</span>
-          <p class="tl-desc">${it.desc}</p>
-        </div>`).join("");
+          <div class="xp-roles">${roles}</div>
+        </article>`;
+      }).join("");
     }
     // projects
     const pl = $("#projects-list");
@@ -258,10 +286,10 @@
     cursor.style.top = e.clientY + "px";
   }
   document.addEventListener("mouseover", e => {
-    if (cursor && e.target.closest("a, button, [data-magnet], .chip")) cursor.classList.add("big");
+    if (cursor && e.target.closest("a, button, [data-magnet], .chip, h1.hero")) cursor.classList.add("big");
   });
   document.addEventListener("mouseout", e => {
-    if (cursor && e.target.closest("a, button, [data-magnet], .chip")) cursor.classList.remove("big");
+    if (cursor && e.target.closest("a, button, [data-magnet], .chip, h1.hero")) cursor.classList.remove("big");
   });
 
   /* ---------- HERO GLOW FOLLOW ---------- */
@@ -308,53 +336,104 @@
   const yearEl = $("#year");
   if (yearEl) yearEl.textContent = new Date().getFullYear();
 
-  /* ---------- HERO TYPEWRITER ---------- */
+  /* ---------- HERO TYPEWRITER + EASTER EGG ---------- */
+  const NAME = ["Sergi", "Sagrera"];
+  // guiños que aparecen al pulsar el nombre (línea blanca / línea acento)
+  const EGGS = [
+    ["¡Hola!", "👋"],
+    ["{ code:", "true }"],
+    ["console", ".log('hey')"],
+    ["café", "+ código ☕"],
+    ["Hola", "mundo 🌍"],
+    ["print(", "'Hola mundo')"]
+  ];
+  const TYPE = 75, ERASE = 38, HOLD = 1100;
+  let heroBusy = false;
+
+  function heroEls() {
+    return {
+      l1: $(".hero .linewrap:nth-child(1) .line"),
+      em: $(".hero em"),
+      bar: $(".hero .cursor-bar")
+    };
+  }
+
   function typeHero() {
-    const l1 = $(".hero .linewrap:nth-child(1) .line");
-    const em = $(".hero em");
-    const bar = $(".hero .cursor-bar");
+    const { l1, em, bar } = heroEls();
     if (!l1 || !em || !bar) return;
-    const t1 = "Sergi", t2 = "Sagrera";
-    // respect reduced motion: show full name, no animation
-    if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      l1.textContent = t1;
-      em.textContent = t2;
-      em.appendChild(bar);
-      return;
-    }
-    // disable the slide-in so the typing reads cleanly
+    const reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    // desactiva el slide-in para que el tipeo se lea limpio
     l1.style.animation = "none";
     const line2 = em.closest(".line");
     if (line2) line2.style.animation = "none";
-    // caret fijo (sin parpadear) mientras se escribe — evita el flicker
-    bar.style.animation = "none";
-    bar.style.opacity = "1";
-    // reset and start with the caret on the first line
-    l1.textContent = "";
-    em.textContent = "";
-    l1.appendChild(bar);
-    const speed = 75;          // ms per letter (rápido pero visible)
-    const pauseBetween = 130;  // pequeña pausa al saltar a la 2ª línea
+    if (reduce) { paint(l1, em, bar, NAME[0], NAME[1], 2); return; }
+    typeSeq(NAME[0], NAME[1], 300);
+    // easter egg: al pulsar el nombre se reescribe con un guiño y vuelve
+    const h1 = $(".hero.hero, h1.hero") || l1.closest("h1");
+    if (h1 && !h1.dataset.egg) {
+      h1.dataset.egg = "1";
+      h1.style.cursor = "pointer";
+      h1.addEventListener("click", playEgg);
+    }
+  }
+
+  // pinta ambas líneas y coloca el caret en la línea indicada (1 ó 2)
+  function paint(l1, em, bar, a, b, caretLine) {
+    l1.textContent = a;
+    em.textContent = b;
+    (caretLine === 1 ? l1 : em).appendChild(bar);
+  }
+
+  function caretSteady(bar, on) {
+    bar.style.animation = on ? "none" : "";
+    bar.style.opacity = on ? "1" : "";
+  }
+
+  // escribe (a,b) desde vacío; al acabar llama a cb
+  function typeSeq(a, b, startDelay, cb) {
+    const { l1, em, bar } = heroEls();
+    if (!l1 || !em || !bar) return;
+    heroBusy = true;
+    caretSteady(bar, true);
+    paint(l1, em, bar, "", "", 1);
     let i = 0, j = -1;
-    function done() {
-      // al terminar, devuelve el parpadeo natural al caret
-      bar.style.animation = "";
-      bar.style.opacity = "";
-    }
-    function step() {
-      if (i < t1.length) {
-        l1.insertBefore(document.createTextNode(t1[i++]), bar);
-        setTimeout(step, speed);
-      } else if (j < 0) {
-        em.appendChild(bar); // mueve el caret a la línea 2 (acento)
-        j = 0;
-        setTimeout(step, pauseBetween);
-      } else if (j < t2.length) {
-        em.insertBefore(document.createTextNode(t2[j++]), bar);
-        setTimeout(j < t2.length ? step : done, speed);
-      }
-    }
-    setTimeout(step, 300); // breve espera tras cargar
+    const step = () => {
+      if (i < a.length) { i++; paint(l1, em, bar, a.slice(0, i), "", 1); setTimeout(step, TYPE); }
+      else if (j < 0) { j = 0; paint(l1, em, bar, a, "", 2); setTimeout(step, 130); }
+      else if (j < b.length) { j++; paint(l1, em, bar, a, b.slice(0, j), 2); setTimeout(step, TYPE); }
+      else { heroBusy = false; caretSteady(bar, false); if (cb) cb(); }
+    };
+    setTimeout(step, startDelay || 0);
+  }
+
+  // borra (a,b) hasta vaciar; al acabar llama a cb
+  function eraseSeq(a, b, cb) {
+    const { l1, em, bar } = heroEls();
+    if (!l1 || !em || !bar) return;
+    heroBusy = true;
+    caretSteady(bar, true);
+    let bi = b.length, ai = a.length;
+    const step = () => {
+      if (bi > 0) { bi--; paint(l1, em, bar, a, b.slice(0, bi), bi > 0 ? 2 : 1); setTimeout(step, ERASE); }
+      else if (ai > 0) { ai--; paint(l1, em, bar, a.slice(0, ai), "", 1); setTimeout(step, ERASE); }
+      else if (cb) cb();
+    };
+    step();
+  }
+
+  function playEgg() {
+    if (heroBusy) return;
+    const egg = EGGS[Math.floor(Math.random() * EGGS.length)];
+    // borra el nombre → escribe el guiño → espera → borra → reescribe el nombre
+    eraseSeq(NAME[0], NAME[1], () => {
+      typeSeq(egg[0], egg[1], 120, () => {
+        setTimeout(() => {
+          eraseSeq(egg[0], egg[1], () => {
+            typeSeq(NAME[0], NAME[1], 120);
+          });
+        }, HOLD);
+      });
+    });
   }
 
   /* ---------- INIT ---------- */

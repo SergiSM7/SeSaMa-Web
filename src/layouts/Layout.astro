@@ -153,6 +153,10 @@ const { description, title } = Astro.props
         #cursor {
           opacity: 1;
         }
+        /* hay cursor custom: ocultamos el nativo en dispositivos con ratón */
+        * {
+          cursor: none !important;
+        }
       }
       @media (pointer: coarse) {
         #cursor {
@@ -396,7 +400,9 @@ const { description, title } = Astro.props
         letter-spacing: -0.045em;
         margin: 6px 0;
       }
-      .hero .linewrap { display: block; overflow: hidden; }
+      /* overflow visible: el typewriter ya no usa el slide, así no se cortan
+         los descendentes (la "g" de Sergi/Sagrera) */
+      .hero .linewrap { display: block; overflow: visible; padding-bottom: 0.04em; }
       .hero .line { display: block; }
       .hero em {
         font-style: normal;
@@ -648,78 +654,156 @@ const { description, title } = Astro.props
       }
       .stat .l { font-size: 0.92rem; color: var(--fg-2); }
 
-      /* TIMELINE */
-      .timeline { position: relative; margin-top: 20px; padding-left: 0; }
-      .tl-line {
-        position: absolute;
-        left: 7px;
-        top: 8px;
-        bottom: 8px;
-        width: 1px;
-        background: var(--line);
+      /* EXPERIENCE — tarjetas por empresa */
+      .xp-list {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 22px;
+        margin-top: 10px;
+        align-items: start;
       }
-      .tl-progress {
-        position: absolute;
-        left: 7px;
-        top: 8px;
-        width: 1px;
-        background: var(--accent);
-        box-shadow: 0 0 10px var(--glow);
-        height: 0;
-        transition: height 0.2s linear;
+      /* la tarjeta con varios roles (y la actual) ocupa toda la fila */
+      .xp-card:not(.solo), .xp-card.cur { grid-column: 1 / -1; }
+      .xp-card {
+        position: relative;
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        background: var(--card);
+        padding: 28px clamp(22px, 3vw, 36px);
+        overflow: hidden;
+        transition: border-color 0.4s, transform 0.5s var(--ease), box-shadow 0.5s;
       }
-      .tl-item { position: relative; padding-left: 42px; padding-bottom: 46px; }
-      .tl-item:last-child { padding-bottom: 0; }
-      .tl-dot {
+      .xp-card::before {
+        content: "";
         position: absolute;
         left: 0;
-        top: 6px;
-        width: 15px;
-        height: 15px;
-        border-radius: 50%;
-        border: 2px solid var(--line-2);
-        background: var(--bg);
-        transition: border-color 0.4s, background 0.4s, transform 0.4s var(--ease);
-        z-index: 2;
+        top: 0;
+        bottom: 0;
+        width: 3px;
+        background: linear-gradient(var(--accent), transparent);
+        opacity: 0.3;
+        transition: opacity 0.4s;
       }
-      .tl-item.cur .tl-dot {
-        border-color: var(--accent);
+      .xp-card:hover {
+        transform: translateY(-4px);
+        border-color: var(--line-2);
+        box-shadow: 0 26px 64px -34px rgba(0, 0, 0, 0.6);
+      }
+      .xp-card:hover::before { opacity: 1; }
+      .xp-card.cur {
+        border-color: color-mix(in srgb, var(--accent) 45%, var(--line));
+        box-shadow: 0 0 0 1px var(--glow);
+      }
+      .xp-card.cur::before { opacity: 1; }
+
+      .xp-top { display: flex; align-items: center; gap: 16px; margin-bottom: 22px; }
+      .xp-mono-badge {
+        width: 54px;
+        height: 54px;
+        flex-shrink: 0;
+        border-radius: 13px;
+        border: 1px solid var(--line-2);
+        display: grid;
+        place-items: center;
+        font-family: var(--font-mono);
+        font-weight: 700;
+        font-size: 17px;
+        letter-spacing: 0.02em;
+        color: var(--accent-text);
+        background: color-mix(in srgb, var(--accent) 9%, transparent);
+        transition: transform 0.4s var(--ease);
+      }
+      .xp-card:hover .xp-mono-badge { transform: scale(1.06) rotate(-3deg); }
+      .xp-company {
+        font-size: clamp(1.25rem, 2.4vw, 1.65rem);
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        line-height: 1.1;
+      }
+      .xp-span {
+        font-family: var(--font-mono);
+        font-size: 12.5px;
+        color: var(--muted);
+        display: block;
+        margin-top: 5px;
+      }
+      .xp-badge {
+        margin-left: auto;
+        align-self: flex-start;
+        font-family: var(--font-mono);
+        font-size: 10.5px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--accent-ink);
         background: var(--accent);
-        box-shadow: 0 0 0 5px var(--glow);
+        padding: 6px 12px;
+        border-radius: 999px;
+        font-weight: 700;
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
       }
-      .tl-item:hover .tl-dot { border-color: var(--accent); transform: scale(1.25); }
-      .tl-head {
+      .xp-badge .live {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: var(--accent-ink);
+        animation: live 2s infinite;
+      }
+
+      /* roles como mini-línea de tiempo dentro de la tarjeta */
+      .xp-roles {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+        margin-left: 27px;
+        padding-left: 26px;
+        border-left: 1px solid var(--line);
+      }
+      .xp-card.solo .xp-roles {
+        margin-left: 0;
+        padding-left: 0;
+        border-left: 0;
+      }
+      .xp-role { position: relative; padding-bottom: 22px; }
+      .xp-role:last-child { padding-bottom: 0; }
+      .xp-card:not(.solo) .xp-role::before {
+        content: "";
+        position: absolute;
+        left: -31px;
+        top: 8px;
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+        background: var(--bg-3);
+        border: 2px solid var(--line-2);
+        transition: border-color 0.3s, transform 0.3s var(--ease);
+      }
+      .xp-card:not(.solo):hover .xp-role::before { border-color: var(--accent); }
+      .xp-role-head {
         display: flex;
         justify-content: space-between;
         align-items: baseline;
-        gap: 18px;
+        gap: 14px;
         flex-wrap: wrap;
       }
-      .tl-role {
-        font-size: clamp(1.15rem, 2vw, 1.5rem);
+      .xp-role-title {
+        font-size: 1.08rem;
         font-weight: 600;
-        letter-spacing: -0.02em;
+        letter-spacing: -0.01em;
       }
-      .tl-period {
+      .xp-role-period {
         font-family: var(--font-mono);
-        font-size: 12px;
+        font-size: 11.5px;
         color: var(--muted);
         white-space: nowrap;
       }
-      .tl-company {
-        font-family: var(--font-mono);
-        font-size: 13px;
-        color: var(--accent-text);
-        margin: 5px 0 12px;
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-      }
-      .tl-desc {
+      .xp-role-desc {
         color: var(--fg-2);
-        line-height: 1.68;
-        max-width: 68ch;
-        font-size: 0.98rem;
+        line-height: 1.62;
+        font-size: 0.95rem;
+        margin-top: 7px;
+        max-width: 72ch;
       }
 
       /* PROJECTS */
@@ -1048,6 +1132,8 @@ const { description, title } = Astro.props
         .proj-item { grid-template-columns: 1fr; }
         .proj-item:nth-child(even) .proj-media { order: 0; }
         .stack-row { grid-template-columns: 1fr; gap: 12px; }
+        .xp-list { grid-template-columns: 1fr; }
+        .xp-card.solo { grid-column: auto; }
       }
       @media (max-width: 720px) {
         .nav-links { display: none; }
