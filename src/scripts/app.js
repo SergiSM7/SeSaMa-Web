@@ -165,6 +165,13 @@
           <div class="chips">${g.items.map(x => `<span class="chip">${x}</span>`).join("")}</div>
         </div>`).join("");
     }
+    // cookie policy table (solo en /cookies)
+    const ckRows = $("#cookie-rows");
+    if (ckRows && t.cookiesPage) {
+      ckRows.innerHTML = t.cookiesPage.rows.map(r =>
+        `<tr><td>${r.name}</td><td>${r.provider}</td><td>${r.purpose}</td><td>${r.duration}</td></tr>`
+      ).join("");
+    }
   }
 
   function applyLang(l) {
@@ -436,10 +443,66 @@
     });
   }
 
+  /* ---------- COOKIE CONSENT ---------- */
+  function readConsent() {
+    try { return JSON.parse(localStorage.getItem("ss-consent") || "null"); } catch (e) { return null; }
+  }
+  function initConsent() {
+    const banner = $("#cookie-banner");
+    if (!banner) return;
+    const prefs = $("#ck-prefs");
+    const toggle = $("#ck-analytics");
+    const saveBtn = $("#ck-save");
+    const configBtn = $("#ck-config");
+
+    const show = () => { banner.hidden = false; };
+    const hide = () => { banner.hidden = true; };
+    const openPrefs = () => {
+      const s = readConsent();
+      if (toggle) toggle.checked = !!(s && s.analytics);
+      if (prefs) prefs.hidden = false;
+      if (saveBtn) saveBtn.hidden = false;
+      if (configBtn) configBtn.hidden = true;
+    };
+
+    function apply(analytics) {
+      try {
+        localStorage.setItem("ss-consent", JSON.stringify({ analytics: !!analytics, ts: Date.now() }));
+      } catch (e) {}
+      if (window.gtag) {
+        window.gtag("consent", "update", {
+          analytics_storage: analytics ? "granted" : "denied",
+          ad_storage: "denied",
+          ad_user_data: "denied",
+          ad_personalization: "denied"
+        });
+      }
+      hide();
+    }
+
+    const accept = $("#ck-accept");
+    const reject = $("#ck-reject");
+    if (accept) accept.addEventListener("click", () => apply(true));
+    if (reject) reject.addEventListener("click", () => apply(false));
+    if (configBtn) configBtn.addEventListener("click", openPrefs);
+    if (saveBtn) saveBtn.addEventListener("click", () => apply(toggle && toggle.checked));
+
+    // reabrir desde el pie de página
+    $$("[data-cookie-open]").forEach(el => el.addEventListener("click", (e) => {
+      e.preventDefault();
+      openPrefs();
+      show();
+    }));
+
+    // primera visita (sin decisión guardada) → mostrar banner
+    if (!readConsent()) show();
+  }
+
   /* ---------- INIT ---------- */
   applyLang(lang);
   onScroll();
   requestAnimationFrame(() => document.body.classList.add("loaded"));
   setTimeout(revealVisible, 200);
   typeHero();
+  initConsent();
 })();

@@ -79,7 +79,43 @@ window.I18N = {
       based: "Barcelona, España",
       avail: ""
     },
-    footer: { rights: "Todos los derechos reservados.", built: "Diseñado y desarrollado con cariño." }
+    footer: { rights: "Todos los derechos reservados.", built: "Diseñado y desarrollado con cariño.", cookies: "Cookies" },
+    cookies: {
+      title: "Cookies",
+      text: "Uso cookies propias y de terceros (Google Analytics) para analizar el uso del sitio de forma anónima. Puedes aceptarlas, rechazarlas o configurarlas.",
+      accept: "Aceptar",
+      reject: "Rechazar",
+      configure: "Configurar",
+      save: "Guardar preferencias",
+      necessary: "Necesarias",
+      necessaryDesc: "Imprescindibles para que el sitio funcione (tema e idioma). No rastrean.",
+      analytics: "Analítica",
+      analyticsDesc: "Google Analytics (GA4) para medir las visitas y el uso de forma agregada.",
+      always: "Siempre activas",
+      policy: "Política de cookies"
+    },
+    cookiesPage: {
+      title: "Política de cookies",
+      updated: "Última actualización: junio de 2026",
+      intro: "Esta política explica qué son las cookies, cuáles utiliza este sitio web y cómo puedes gestionarlas o retirar tu consentimiento.",
+      s1Title: "¿Qué son las cookies?",
+      s1Text: "Las cookies son pequeños archivos que se almacenan en tu dispositivo al visitar una web. Sirven para que el sitio funcione, recordar preferencias o medir su uso.",
+      s2Title: "¿Qué cookies utilizamos?",
+      s2Text: "Las cookies de analítica solo se cargan si das tu consentimiento. Las necesarias (tema e idioma) se guardan en tu navegador y no te rastrean.",
+      th: { name: "Cookie", provider: "Proveedor", purpose: "Finalidad", duration: "Duración" },
+      rows: [
+        { name: "_ga", provider: "Google Analytics", purpose: "Distinguir usuarios de forma anónima", duration: "2 años" },
+        { name: "_ga_*", provider: "Google Analytics", purpose: "Mantener el estado de la sesión", duration: "2 años" },
+        { name: "ss-theme · ss-lang", provider: "Este sitio", purpose: "Recordar tema e idioma (no rastrea)", duration: "Persistente" }
+      ],
+      s3Title: "Base legal",
+      s3Text: "Las cookies analíticas solo se activan con tu consentimiento explícito mediante el Consent Mode v2 de Google. Hasta entonces no se almacena ninguna cookie de análisis.",
+      s4Title: "Gestionar o retirar el consentimiento",
+      s4Text: "Puedes cambiar tu decisión cuando quieras desde el enlace «Cookies» del pie de página, o borrando las cookies desde la configuración de tu navegador.",
+      s5Title: "Más información",
+      s5Text: "Consulta cómo Google trata los datos en sus políticas de privacidad.",
+      back: "Volver al inicio"
+    }
   },
 
   ca: {
@@ -157,7 +193,43 @@ window.I18N = {
       based: "Barcelona, Espanya",
       avail: ""
     },
-    footer: { rights: "Tots els drets reservats.", built: "Dissenyat i desenvolupat amb cura." }
+    footer: { rights: "Tots els drets reservats.", built: "Dissenyat i desenvolupat amb cura.", cookies: "Cookies" },
+    cookies: {
+      title: "Cookies",
+      text: "Faig servir cookies pròpies i de tercers (Google Analytics) per analitzar l'ús del web de manera anònima. Pots acceptar-les, rebutjar-les o configurar-les.",
+      accept: "Acceptar",
+      reject: "Rebutjar",
+      configure: "Configurar",
+      save: "Desar preferències",
+      necessary: "Necessàries",
+      necessaryDesc: "Imprescindibles perquè el lloc funcioni (tema i idioma). No rastregen.",
+      analytics: "Analítica",
+      analyticsDesc: "Google Analytics (GA4) per mesurar les visites i l'ús de manera agregada.",
+      always: "Sempre actives",
+      policy: "Política de cookies"
+    },
+    cookiesPage: {
+      title: "Política de cookies",
+      updated: "Última actualització: juny de 2026",
+      intro: "Aquesta política explica què són les cookies, quines utilitza aquest lloc web i com pots gestionar-les o retirar el teu consentiment.",
+      s1Title: "Què són les cookies?",
+      s1Text: "Les cookies són petits arxius que es desen al teu dispositiu en visitar un web. Serveixen perquè el lloc funcioni, recordar preferències o mesurar-ne l'ús.",
+      s2Title: "Quines cookies utilitzem?",
+      s2Text: "Les cookies d'analítica només es carreguen si hi dones el consentiment. Les necessàries (tema i idioma) es desen al teu navegador i no et rastregen.",
+      th: { name: "Cookie", provider: "Proveïdor", purpose: "Finalitat", duration: "Durada" },
+      rows: [
+        { name: "_ga", provider: "Google Analytics", purpose: "Distingir usuaris de manera anònima", duration: "2 anys" },
+        { name: "_ga_*", provider: "Google Analytics", purpose: "Mantenir l'estat de la sessió", duration: "2 anys" },
+        { name: "ss-theme · ss-lang", provider: "Aquest lloc", purpose: "Recordar tema i idioma (no rastreja)", duration: "Persistent" }
+      ],
+      s3Title: "Base legal",
+      s3Text: "Les cookies analítiques només s'activen amb el teu consentiment explícit mitjançant el Consent Mode v2 de Google. Fins llavors no es desa cap cookie d'anàlisi.",
+      s4Title: "Gestionar o retirar el consentiment",
+      s4Text: "Pots canviar la teva decisió quan vulguis des de l'enllaç «Cookies» del peu de pàgina, o esborrant les cookies des de la configuració del navegador.",
+      s5Title: "Més informació",
+      s5Text: "Consulta com Google tracta les dades a les seves polítiques de privacitat.",
+      back: "Tornar a l'inici"
+    }
   },
 
   en: {
@@ -235,6 +307,42 @@ window.I18N = {
       based: "Barcelona, Spain",
       avail: ""
     },
-    footer: { rights: "All rights reserved.", built: "Designed and developed with care." }
+    footer: { rights: "All rights reserved.", built: "Designed and developed with care.", cookies: "Cookies" },
+    cookies: {
+      title: "Cookies",
+      text: "I use first- and third-party cookies (Google Analytics) to analyse site usage anonymously. You can accept, reject or configure them.",
+      accept: "Accept",
+      reject: "Reject",
+      configure: "Configure",
+      save: "Save preferences",
+      necessary: "Necessary",
+      necessaryDesc: "Essential for the site to work (theme and language). They don't track you.",
+      analytics: "Analytics",
+      analyticsDesc: "Google Analytics (GA4) to measure visits and usage in aggregate.",
+      always: "Always on",
+      policy: "Cookie policy"
+    },
+    cookiesPage: {
+      title: "Cookie policy",
+      updated: "Last updated: June 2026",
+      intro: "This policy explains what cookies are, which ones this website uses and how you can manage them or withdraw your consent.",
+      s1Title: "What are cookies?",
+      s1Text: "Cookies are small files stored on your device when you visit a website. They help the site work, remember preferences or measure usage.",
+      s2Title: "Which cookies do we use?",
+      s2Text: "Analytics cookies are only loaded if you give consent. Necessary ones (theme and language) are stored in your browser and don't track you.",
+      th: { name: "Cookie", provider: "Provider", purpose: "Purpose", duration: "Duration" },
+      rows: [
+        { name: "_ga", provider: "Google Analytics", purpose: "Distinguish users anonymously", duration: "2 years" },
+        { name: "_ga_*", provider: "Google Analytics", purpose: "Persist session state", duration: "2 years" },
+        { name: "ss-theme · ss-lang", provider: "This site", purpose: "Remember theme and language (no tracking)", duration: "Persistent" }
+      ],
+      s3Title: "Legal basis",
+      s3Text: "Analytics cookies are only enabled with your explicit consent via Google Consent Mode v2. Until then, no analytics cookie is stored.",
+      s4Title: "Manage or withdraw consent",
+      s4Text: "You can change your choice anytime from the “Cookies” link in the footer, or by clearing cookies in your browser settings.",
+      s5Title: "More information",
+      s5Text: "See how Google handles data in its privacy policies.",
+      back: "Back to home"
+    }
   }
 };

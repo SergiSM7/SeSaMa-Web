@@ -1,0 +1,54 @@
+---
+import Layout from "../layouts/Layout.astro"
+import Nav from "../components/Nav.astro"
+import Footer from "../components/Footer.astro"
+---
+
+<Layout
+  title="Política de cookies — Sergi Sagrera"
+  description="Política de cookies de sergisagrera.com: qué cookies se usan, con qué finalidad y cómo gestionarlas o retirar el consentimiento."
+>
+  <Nav />
+  <section class="legal">
+    <div class="wrap">
+      <h1 class="h2" data-i18n="cookiesPage.title">Política de cookies</h1>
+      <p class="updated" data-i18n="cookiesPage.updated"></p>
+      <p class="intro" data-i18n="cookiesPage.intro"></p>
+
+      <h2 data-i18n="cookiesPage.s1Title">¿Qué son las cookies?</h2>
+      <p data-i18n="cookiesPage.s1Text"></p>
+
+      <h2 data-i18n="cookiesPage.s2Title">¿Qué cookies utilizamos?</h2>
+      <p data-i18n="cookiesPage.s2Text"></p>
+      <table class="ck-table">
+        <thead>
+          <tr>
+            <th data-i18n="cookiesPage.th.name">Cookie</th>
+            <th data-i18n="cookiesPage.th.provider">Proveedor</th>
+            <th data-i18n="cookiesPage.th.purpose">Finalidad</th>
+            <th data-i18n="cookiesPage.th.duration">Duración</th>
+          </tr>
+        </thead>
+        <tbody id="cookie-rows"></tbody>
+      </table>
+
+      <h2 data-i18n="cookiesPage.s3Title">Base legal</h2>
+      <p data-i18n="cookiesPage.s3Text"></p>
+
+      <h2 data-i18n="cookiesPage.s4Title">Gestionar o retirar el consentimiento</h2>
+      <p data-i18n="cookiesPage.s4Text"></p>
+
+      <h2 data-i18n="cookiesPage.s5Title">Más información</h2>
+      <p>
+        <span data-i18n="cookiesPage.s5Text"></span>
+        <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">policies.google.com/privacy</a> ·
+        <a href="https://policies.google.com/technologies/cookies" target="_blank" rel="noopener">policies.google.com/technologies/cookies</a>
+      </p>
+
+      <p style="margin-top:40px">
+        <a href="/" data-i18n="cookiesPage.back">Volver al inicio</a>
+      </p>
+    </div>
+  </section>
+  <Footer />
+</Layout>
