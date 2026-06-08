@@ -479,8 +479,6 @@
           ad_personalization: "denied"
         });
       }
-      // carga GA solo al aceptar (no antes: sin conexión a Google sin consentir)
-      if (analytics && typeof window.__loadGA === "function") window.__loadGA();
       hide();
     }
 

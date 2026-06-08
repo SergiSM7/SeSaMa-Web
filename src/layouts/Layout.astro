@@ -43,8 +43,10 @@ const GA_ID = "G-ZWSQ00ZTHB"
     {/* Google Consent Mode v2 — por defecto DENEGADO; GA solo se carga si hay
         un GA_ID real y se respeta el consentimiento guardado por el usuario */}
     <script define:vars={{ gaId: GA_ID }}>
-      // Basic Consent Mode v2: NO se contacta con Google hasta que el usuario
-      // acepta la analítica. El consentimiento caduca a los 12 meses (AEPD).
+      // Advanced Consent Mode v2: gtag se carga desde el inicio con el
+      // consentimiento DENEGADO por defecto → sin cookies hasta aceptar
+      // (solo pings anónimos para datos agregados). El consentimiento de
+      // analítica caduca a los 12 meses y se vuelve a preguntar (AEPD).
       window.dataLayer = window.dataLayer || [];
       function gtag() { dataLayer.push(arguments); }
       window.gtag = gtag;
@@ -57,6 +59,8 @@ const GA_ID = "G-ZWSQ00ZTHB"
         security_storage: "granted",
         wait_for_update: 500
       });
+      gtag("set", "url_passthrough", true);
+      gtag("set", "ads_data_redaction", true);
 
       var GA_MAX_AGE = 365 * 24 * 60 * 60 * 1000; // 12 meses
       window.__gaValidConsent = function () {
@@ -66,23 +70,19 @@ const GA_ID = "G-ZWSQ00ZTHB"
           return s;
         } catch (e) { return null; }
       };
-      // carga gtag.js bajo demanda (idempotente), solo con un ID real
-      window.__loadGA = function () {
-        if (window.__gaLoaded) return;
-        if (!gaId || gaId.indexOf("G-") !== 0 || gaId === "G-XXXXXXXXXX") return;
-        window.__gaLoaded = true;
+      // si hay consentimiento válido previo, concede la analítica
+      var prev = window.__gaValidConsent();
+      if (prev && prev.analytics) {
+        gtag("consent", "update", { analytics_storage: "granted" });
+      }
+      // carga gtag.js (solo con un ID real, no el placeholder)
+      if (gaId && gaId.indexOf("G-") === 0 && gaId !== "G-XXXXXXXXXX") {
         var s = document.createElement("script");
         s.async = true;
         s.src = "https://www.googletagmanager.com/gtag/js?id=" + gaId;
         document.head.appendChild(s);
         gtag("js", new Date());
         gtag("config", gaId);
-      };
-      // si ya hay consentimiento válido de analítica, activa y carga GA
-      var prev = window.__gaValidConsent();
-      if (prev && prev.analytics) {
-        gtag("consent", "update", { analytics_storage: "granted" });
-        window.__loadGA();
       }
     </script>
   </head>
