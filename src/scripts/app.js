@@ -126,7 +126,7 @@
     // projects
     const pl = $("#projects-list");
     if (pl) {
-      pl.innerHTML = t.projects.items.map((p, i) => {
+      pl.innerHTML = t.projects.items.map((p) => {
         const links = [];
         if (p.url) links.push(`<a class="plink primary" href="${p.url}" target="_blank" rel="noopener" data-magnet>${t.projects.view}<span class="arr">↗</span></a>`);
         if (p.code) links.push(`<a class="plink" href="${p.code}" target="_blank" rel="noopener" data-magnet>${t.projects.code}<span class="arr">↗</span></a>`);
@@ -144,7 +144,7 @@
               <div class="browser-dots"><span></span><span></span><span></span></div>
               <div class="browser-url"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 018 0v4"/></svg>${domain}</div>
             </div>
-            <div class="proj-shot"><span class="proj-num">0${i + 1}</span>${shot}</div>
+            <div class="proj-shot">${shot}</div>
           </div>
           <div class="proj-info">
             <div class="kind"><span>${p.kind}</span><span class="yr">${p.year}</span></div>
