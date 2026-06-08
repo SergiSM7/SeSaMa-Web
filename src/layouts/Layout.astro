@@ -7,10 +7,6 @@ interface Props {
 }
 
 const { description, title } = Astro.props
-
-// ⚠️ Reemplaza por tu ID de medición de GA4 (GA4 → Administrar → Flujos de datos).
-// Mientras sea el placeholder, NO se carga Google Analytics (solo se ve el banner).
-const GA_ID = "G-ZWSQ00ZTHB"
 ---
 
 <!doctype html>
@@ -40,13 +36,9 @@ const GA_ID = "G-ZWSQ00ZTHB"
       })();
     </script>
 
-    {/* Google Consent Mode v2 — por defecto DENEGADO; GA solo se carga si hay
-        un GA_ID real y se respeta el consentimiento guardado por el usuario */}
-    <script define:vars={{ gaId: GA_ID }}>
-      // Advanced Consent Mode v2: gtag se carga desde el inicio con el
-      // consentimiento DENEGADO por defecto → sin cookies hasta aceptar
-      // (solo pings anónimos para datos agregados). El consentimiento de
-      // analítica caduca a los 12 meses y se vuelve a preguntar (AEPD).
+    {/* Consent Mode v2 — debe ejecutarse ANTES de gtag.js. Por defecto
+        denegado → sin cookies hasta aceptar. Caduca a los 12 meses (AEPD). */}
+    <script is:inline>
       window.dataLayer = window.dataLayer || [];
       function gtag() { dataLayer.push(arguments); }
       window.gtag = gtag;
@@ -61,29 +53,23 @@ const GA_ID = "G-ZWSQ00ZTHB"
       });
       gtag("set", "url_passthrough", true);
       gtag("set", "ads_data_redaction", true);
-
-      var GA_MAX_AGE = 365 * 24 * 60 * 60 * 1000; // 12 meses
       window.__gaValidConsent = function () {
         try {
           var s = JSON.parse(localStorage.getItem("ss-consent") || "null");
-          if (!s || !s.ts || (Date.now() - s.ts) > GA_MAX_AGE) return null;
+          if (!s || !s.ts || (Date.now() - s.ts) > 365 * 24 * 60 * 60 * 1000) return null;
           return s;
         } catch (e) { return null; }
       };
-      // si hay consentimiento válido previo, concede la analítica
-      var prev = window.__gaValidConsent();
-      if (prev && prev.analytics) {
+      var __prev = window.__gaValidConsent();
+      if (__prev && __prev.analytics) {
         gtag("consent", "update", { analytics_storage: "granted" });
       }
-      // carga gtag.js (solo con un ID real, no el placeholder)
-      if (gaId && gaId.indexOf("G-") === 0 && gaId !== "G-XXXXXXXXXX") {
-        var s = document.createElement("script");
-        s.async = true;
-        s.src = "https://www.googletagmanager.com/gtag/js?id=" + gaId;
-        document.head.appendChild(s);
-        gtag("js", new Date());
-        gtag("config", gaId);
-      }
+    </script>
+    {/* Google tag (gtag.js) — etiqueta literal para que GA la detecte */}
+    <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-ZWSQ00ZTHB"></script>
+    <script is:inline>
+      gtag("js", new Date());
+      gtag("config", "G-ZWSQ00ZTHB");
     </script>
   </head>
   <body>
